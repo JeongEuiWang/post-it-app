@@ -6,7 +6,7 @@ class CategoryService {
 
   CategoryService({required this.apiClient});
 
-  static Future<List<Category>> getCategoriesAPI(String userId) async {
+  static Future<List<Category>> getCategoriesAPI() async {
     final dummy = [
       {"id": 1, "name": "Reddit"},
       {"id": 2, "name": "Korea FE Article"},
