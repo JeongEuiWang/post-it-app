@@ -1,6 +1,6 @@
 import 'package:get/get.dart';
-import 'package:post_it/models/category_model.dart';
-import 'package:post_it/services/category_service.dart';
+import 'package:post_it/models/category.model.dart';
+import 'package:post_it/services/category.service.dart';
 
 class CategoryController extends GetxController {
   var isLoading = true.obs;
@@ -32,5 +32,9 @@ class CategoryController extends GetxController {
   // 필터 선택 변경
   void onSelectCategory(int index) {
     selectedCategoryIndex.value = index;
+  }
+
+  bool isSelectedCategory(int index) {
+    return selectedCategoryIndex.value == index;
   }
 }

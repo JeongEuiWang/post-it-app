@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:post_it/controller/category_controller.dart';
-import 'package:post_it/screens/splash.dart';
+import 'package:post_it/controller/category.controller.dart';
+import 'package:post_it/screens/splash.screen.dart';
 import 'package:get/get.dart';
 
 void main() {

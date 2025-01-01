@@ -1,5 +1,5 @@
 // import 'package:flutter/material.dart';
-// import 'package:post_it/controller/category_controller.dart';
+// import 'package:post_it/controller/category.controller.dart';
 // import 'package:get/get.dart';
 
 // class CategoryButtonsWidget extends StatelessWidget {
