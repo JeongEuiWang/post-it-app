@@ -1,10 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
-import 'package:post_it/constants/Colors.dart';
+import 'package:post_it/constants/color.dart';
 import 'package:post_it/constants/font.dart';
+import 'package:post_it/controller/articles.controller.dart';
 import 'package:post_it/controller/category.controller.dart';
 import 'package:get/get.dart';
 import 'package:post_it/controller/user.controller.dart';
+import 'package:post_it/models/category.model.dart';
+import 'package:post_it/screens/article_detail.screen.dart';
+import 'package:post_it/widgets/category_buttons.dart';
+import 'package:post_it/widgets/create_category_modal.dart';
+import 'package:post_it/widgets/empty_data_viewer.dart';
 
 class AllArticlesTab extends StatefulWidget {
   const AllArticlesTab({super.key});
@@ -13,27 +18,36 @@ class AllArticlesTab extends StatefulWidget {
   AllArticlesTabState createState() => AllArticlesTabState();
 }
 
-class AllArticlesTabState extends State<AllArticlesTab> {
-  final CategoryController _categoryController = Get.find<CategoryController>();
-  final UserController _userController = Get.find<UserController>();
+class AllArticlesTabState extends State<AllArticlesTab>
+    with SingleTickerProviderStateMixin {
+  final CategoryController categoryController = Get.find<CategoryController>();
+  final int? _userId = Get.find<UserController>().userId;
+  late AnimationController _animationController;
 
   @override
   void initState() {
+    if (_userId != null && categoryController.categories.isEmpty) {
+      _getCategories(_userId);
+    }
+    _animationController = BottomSheet.createAnimationController(this);
+    _animationController.duration = Duration(milliseconds: 300);
     super.initState();
-    _getCategories();
   }
 
-  Future<void> _getCategories() async {
-    await _categoryController.getCategories(_userController.userId!);
+  Future<void> _getCategories(int? userId) async {
+    if (_userId != null) {
+      await categoryController.getCategories(userId: _userId);
+    }
+    print(categoryController.categories);
   }
 
   @override
   Widget build(BuildContext context) {
-    return Obx(() => _categoryController.isLoadingState()
-        ? Center(child: CircularProgressIndicator(color: CustomColors.primary))
+    return Obx(() => categoryController.isLoadingState()
+        ? SizedBox.shrink()
         : Column(mainAxisSize: MainAxisSize.max, children: [
             CategoryButtons(),
-            _categoryController.categories.isEmpty
+            categoryController.categories.isEmpty
                 ? Column(
                     spacing: 20,
                     children: [
@@ -47,118 +61,118 @@ class AllArticlesTabState extends State<AllArticlesTab> {
                           backgroundColor:
                               WidgetStateProperty.all(CustomColors.primary),
                         ),
-                        onPressed: () {},
+                        onPressed: () {
+                          CreateCategoryModal.show(context,
+                              animationController: _animationController);
+                        },
                         child: Text('생성하기',
                             style: TextStyle(
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
                                 fontFamily: pretendard,
                                 color: CustomColors.white)),
                       ),
                     ],
                   )
-                : Text("All categories")
+                : Padding(
+                    padding: const EdgeInsets.only(top: 30),
+                    child: AllArticles())
           ]));
   }
 }
 
-class EmptyDataViewer extends StatelessWidget {
-  final String title;
-  final String description;
-  final String imagePath;
-
-  const EmptyDataViewer({
-    super.key,
-    required this.imagePath,
-    required this.title,
-    required this.description,
-  });
+class AllArticles extends StatefulWidget {
+  const AllArticles({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      return Center(
-          child: Column(children: [
-        SvgPicture.asset(imagePath,
-            width: constraints.maxWidth * 0.8, fit: BoxFit.cover),
-        Text(title,
-            style: TextStyle(
-                fontSize: 20,
-                fontFamily: pretendard,
-                fontWeight: FontWeight.w600)),
-        Text(description,
-            style: TextStyle(
-                fontSize: 16,
-                fontFamily: pretendard,
-                fontWeight: FontWeight.w400))
-      ]));
-    });
+  AllArticlesState createState() => AllArticlesState();
+}
+
+class AllArticlesState extends State<AllArticles> {
+  final ArticleController articleController = Get.find<ArticleController>();
+  final RxInt selectedCategoryIndex =
+      Get.find<CategoryController>().selectedCategoryIndex;
+  final int? userId = Get.find<UserController>().userId;
+  final List<Category> categories = Get.find<CategoryController>().categories;
+
+  @override
+  void initState() {
+    _getCategoryArticles(userId, categories[selectedCategoryIndex.value].id);
+    super.initState();
   }
-}
 
-class CategoryButtons extends StatefulWidget {
-  @override
-  CategoryButtonsState createState() => CategoryButtonsState();
-}
-
-class CategoryButtonsState extends State<CategoryButtons> {
-  final CategoryController _categoryController = Get.find<CategoryController>();
+  Future<void> _getCategoryArticles(int? userId, int categoryId) async {
+    if (userId != null && categories.isNotEmpty) {
+      await articleController.getCategoryArticles(
+          userId: userId, categoryId: categoryId);
+      print(articleController.articles);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-        width: double.infinity,
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.only(top: 20),
-          scrollDirection: Axis.horizontal,
-          child: Row(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children:
-                  List.generate(_categoryController.categories.length, (index) {
-                return Padding(
-                  padding: const EdgeInsets.only(right: 10),
-                  child: Obx(() => AnimatedContainer(
-                      duration: Duration(milliseconds: 150), // 애니메이션 지속 시간
-                      curve: Curves.easeInOut, // 애니메이션 곡선
-                      decoration: BoxDecoration(
-                        color: _categoryController.isSelectedCategory(index)
-                            ? CustomColors.primary
-                            : CustomColors.white,
-                        border: Border.all(
-                            width: 1,
-                            color: _categoryController.isSelectedCategory(index)
-                                ? CustomColors.primary
-                                : CustomColors.border),
-                        borderRadius:
-                            BorderRadius.circular(100), // 선택 여부에 따른 둥근 모서리
-                      ),
-                      child: TextButton(
-                          onPressed: () {
-                            _categoryController.onSelectCategory(index);
-                          },
-                          style: TextButton.styleFrom(
-                            minimumSize: Size.zero,
-                            padding: EdgeInsets.symmetric(
-                                vertical: 10, horizontal: 28),
-                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                          ),
-                          child: AnimatedDefaultTextStyle(
-                              duration: Duration(milliseconds: 150),
-                              curve: Curves.easeInOut, // 애니메이션 곡선
-                              style: TextStyle(
-                                  fontSize: 14,
-                                  color: _categoryController
-                                          .isSelectedCategory(index)
-                                      ? CustomColors.white
-                                      : CustomColors.black,
-                                  fontFamily: pretendard,
-                                  fontWeight: FontWeight.w500),
-                              child: Text(
-                                _categoryController.categories[index].name,
-                              ))))),
-                );
-              })),
-        ));
+    return Obx(() => articleController.isLoadingArticleList()
+        ? CircularProgressIndicator(
+            valueColor: AlwaysStoppedAnimation<Color>(CustomColors.primary),
+          )
+        : articleController.articles.isEmpty
+            ? EmptyDataViewer(
+                imagePath: 'assets/images/image_empty_article.svg',
+                title: '아티클이 존재하지 않아요.',
+                description: '혹시 설정한 이메일이 잘못 기입되진 않았는지\n확인해주세요.',
+              )
+            : SingleChildScrollView(
+                scrollDirection: Axis.vertical,
+                child: Column(
+                    children: List.generate(articleController.articles.length,
+                        (index) {
+                  return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => ArticleDetailScreen(
+                                    categoryId:
+                                        categories[selectedCategoryIndex.value]
+                                            .id,
+                                    messageId: articleController
+                                        .articles[index].messageId,
+                                    categoryName:
+                                        categories[selectedCategoryIndex.value]
+                                            .name)),
+                          );
+                        },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(articleController.articles[index].title,
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontFamily: pretendard,
+                                    fontWeight: FontWeight.bold,
+                                    color: CustomColors.black)),
+                            Text(articleController.articles[index].snippet,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontFamily: pretendard,
+                                    fontWeight: FontWeight.w400,
+                                    color: CustomColors.lightGrey)),
+                            const SizedBox(
+                              height: 16,
+                            ),
+                            Divider(
+                              // 구분선
+                              color: CustomColors.border, // 색상
+                              thickness: 0.5, // 두께
+                            ),
+                          ],
+                        ),
+                      ));
+                }))));
   }
 }

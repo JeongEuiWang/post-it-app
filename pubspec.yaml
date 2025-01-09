@@ -43,7 +43,7 @@ dependencies:
   flutter_svg: ^2.0.0
   flutter_widget_from_html: ^0.15.3
   flutter_secure_storage: ^9.2.2
-
+  fluttertoast: ^8.2.10
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -68,6 +68,9 @@ flutter:
   assets:
       - assets/images/icon_setting.svg
       - assets/images/image_empty.svg
+      - assets/images/icon_x.svg
+      - assets/images/icon_caution.svg
+      - assets/images/image_empty_article.svg
   fonts:
       - family: Pretendard
         fonts:

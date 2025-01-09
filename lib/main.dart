@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:post_it/controller/articles.controller.dart';
 import 'package:post_it/screens/splash.screen.dart';
 import 'firebase_options.dart';
 import 'package:get/get.dart';
@@ -13,6 +14,7 @@ Future<void> main() async {
   );
   Get.put(CategoryController());
   Get.put(UserController());
+  Get.put(ArticleController());
   runApp(MyApp());
 }
 

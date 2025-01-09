@@ -23,7 +23,7 @@ class UserController extends GetxController {
 
   user_model.User? get user => _user.value;
 
-  int? get userId => _user.value?.id;
+  int? get userId => _user.value!.id;
 
   Future<void> handleLogin() async {
     try {
@@ -65,9 +65,12 @@ class UserController extends GetxController {
 
       final userResponse = await _userService.loginAPI(googleAuth.idToken!);
       setUser(userResponse);
-      await _storage.saveAccessToken(googleAuth.accessToken!);
+      final accessToken = googleAuth.accessToken;
+      await _storage.clearTokens();
+      await _storage.saveAccessToken(accessToken!);
       return true;
     } catch (e) {
+      print(e);
       return false;
     }
     // await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 대기 시간

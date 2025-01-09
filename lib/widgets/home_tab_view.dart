@@ -6,10 +6,10 @@ class HomeTabView extends StatefulWidget {
 
   const HomeTabView({Key? key, required this.tabs, required this.tabViews});
   @override
-  _HomeTabViewState createState() => _HomeTabViewState();
+  HomeTabViewState createState() => HomeTabViewState();
 }
 
-class _HomeTabViewState extends State<HomeTabView>
+class HomeTabViewState extends State<HomeTabView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController; // initState 이후 초기화
 

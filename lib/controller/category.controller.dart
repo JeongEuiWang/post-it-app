@@ -11,15 +11,32 @@ class CategoryController extends GetxController {
   List<Category> get categories => _categories;
 
   // 필터 데이터 가져오기
-  Future<void> getCategories(int userId) async {
+  Future<void> getCategories({required int? userId}) async {
+    isLoading.value = true;
+    if (userId == null) {
+      throw Exception("Error: userId is null");
+    }
     try {
-      var response = await _categorySerrvice.getCategoriesAPI(userId);
-      print(response);
+      final response = await _categorySerrvice.getCategoriesAPI(userId);
       _categories.value = response;
     } catch (e) {
       throw Exception(e);
     } finally {
       isLoading.value = false;
+    }
+  }
+
+  Future<Category> createCategory(
+      {required int userId,
+      required String name,
+      required String fromEmail}) async {
+    try {
+      final result =
+          await _categorySerrvice.createCategoryAPI(userId, name, fromEmail);
+      return result;
+    } catch (e) {
+      print(e);
+      rethrow;
     }
   }
 
