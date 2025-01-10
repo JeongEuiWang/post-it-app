@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:post_it/constants/color.dart';
 import 'package:post_it/constants/font.dart';
 
 class EmptyDataViewer extends StatelessWidget {
@@ -31,6 +32,7 @@ class EmptyDataViewer extends StatelessWidget {
             style: TextStyle(
                 fontSize: 16,
                 fontFamily: pretendard,
+                color: CustomColors.grey,
                 fontWeight: FontWeight.w400))
       ]));
     });

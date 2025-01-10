@@ -81,13 +81,13 @@ Widget _createCategoryWidget({
     width: double.infinity,
     height: bottomSheetHeight,
     child: Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
         children: [
           _createCategoryHeader(),
           Expanded(
             child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 32),
+                padding: const EdgeInsets.only(top: 32),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
@@ -121,6 +121,7 @@ Widget _createCategoryHeader() {
         'assets/images/icon_x.svg',
         width: 24,
         height: 24,
+        colorFilter: ColorFilter.mode(CustomColors.grey, BlendMode.srcIn),
       ),
     ],
   );
@@ -156,11 +157,11 @@ Widget _createCategoryForm({
       children: [
         CustomInput(
           label: "카테고리 이름",
-          description: "홈에서 표시될 카테고리의 이름을 입력하세요",
+          description: "홈에서 표시 될 카테고리의 이름을 입력하세요.",
           controller: nameController,
           validator: nameValidator,
         ),
-        const SizedBox(height: 30),
+        const SizedBox(height: 32),
         CustomInput(
           label: "이메일",
           description: "구독형 아티클의 송신자 이메일을 입력하세요.",
@@ -189,7 +190,7 @@ Widget _createCategoryFooter({required void Function() onPressed}) {
               Text("안내사항",
                   style: TextStyle(
                       fontSize: 14,
-                      fontWeight: FontWeight.bold,
+                      fontWeight: FontWeight.w600,
                       color: CustomColors.black,
                       fontFamily: pretendard)),
             ],
@@ -199,8 +200,8 @@ Widget _createCategoryFooter({required void Function() onPressed}) {
               "구독 아티클을 전송받을 이메일을 정확히 입력해주세요!\n잘못된 이메일로 입력하시면 아티클 목록을 조회할 수 없어요.",
               style: TextStyle(
                   fontSize: 14,
-                  color: CustomColors.lightGrey,
-                  fontWeight: FontWeight.w500,
+                  color: CustomColors.grey,
+                  fontWeight: FontWeight.w400,
                   fontFamily: pretendard)),
         ],
       ),

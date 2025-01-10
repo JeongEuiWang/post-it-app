@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:post_it/constants/color.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -42,8 +43,13 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fontFamily: 'Pretendard')),
             TextButton(
                 onPressed: signOutUser,
-                child: SvgPicture.asset('assets/images/icon_setting.svg',
-                    height: 24.0, width: 24.0)),
+                child: SvgPicture.asset(
+                  'assets/images/icon_setting.svg',
+                  height: 24.0,
+                  width: 24.0,
+                  colorFilter:
+                      ColorFilter.mode(CustomColors.grey, BlendMode.srcIn),
+                )),
           ],
         ));
   }

@@ -23,18 +23,18 @@ class CustomInput extends StatelessWidget {
         Text(label,
             style: TextStyle(
                 fontSize: 16,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 fontFamily: pretendard)),
         const SizedBox(height: 4),
         description.isNotEmpty
             ? Text(description,
                 style: TextStyle(
-                    fontSize: 13,
+                    fontSize: 14,
                     color: CustomColors.grey,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.w400,
                     fontFamily: pretendard))
             : SizedBox.shrink(),
-        const SizedBox(height: 12),
+        // const SizedBox(height: 8),
         TextFormField(
             controller: controller,
             decoration: InputDecoration(
@@ -42,7 +42,7 @@ class CustomInput extends StatelessWidget {
               hintStyle: TextStyle(
                   fontSize: 16,
                   color: CustomColors.lightGrey,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.w400,
                   fontFamily: pretendard),
               enabledBorder: UnderlineInputBorder(
                 borderSide: BorderSide(color: CustomColors.border),

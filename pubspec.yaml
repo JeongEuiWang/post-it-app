@@ -44,6 +44,8 @@ dependencies:
   flutter_widget_from_html: ^0.15.3
   flutter_secure_storage: ^9.2.2
   fluttertoast: ^8.2.10
+  html: ^0.15.5
+  intl: ^0.20.1
 dev_dependencies:
   flutter_test:
     sdk: flutter

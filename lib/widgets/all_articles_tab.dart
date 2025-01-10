@@ -47,36 +47,36 @@ class AllArticlesTabState extends State<AllArticlesTab>
         ? SizedBox.shrink()
         : Column(mainAxisSize: MainAxisSize.max, children: [
             CategoryButtons(),
-            categoryController.categories.isEmpty
-                ? Column(
-                    spacing: 20,
-                    children: [
-                      EmptyDataViewer(
-                        imagePath: 'assets/images/image_empty.svg',
-                        title: '카테고리가 비어있어요',
-                        description: '먼저 카테고리를 생성해 주세요.',
-                      ),
-                      ElevatedButton(
-                        style: ButtonStyle(
-                          backgroundColor:
-                              WidgetStateProperty.all(CustomColors.primary),
-                        ),
-                        onPressed: () {
-                          CreateCategoryModal.show(context,
-                              animationController: _animationController);
-                        },
-                        child: Text('생성하기',
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w600,
-                                fontFamily: pretendard,
-                                color: CustomColors.white)),
-                      ),
-                    ],
-                  )
-                : Padding(
-                    padding: const EdgeInsets.only(top: 30),
-                    child: AllArticles())
+            Expanded(
+                child: categoryController.categories.isEmpty
+                    ? Column(
+                        spacing: 20,
+                        children: [
+                          EmptyDataViewer(
+                            imagePath: 'assets/images/image_empty.svg',
+                            title: '카테고리가 비어있어요',
+                            description: '먼저 카테고리를 생성해 주세요.',
+                          ),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                                fixedSize: Size(170, 40),
+                                backgroundColor: CustomColors.primary),
+                            onPressed: () {
+                              CreateCategoryModal.show(context,
+                                  animationController: _animationController);
+                            },
+                            child: Text('생성하기',
+                                style: TextStyle(
+                                    fontSize: 16,
+                                    fontWeight: FontWeight.w600,
+                                    fontFamily: pretendard,
+                                    color: CustomColors.white)),
+                          ),
+                        ],
+                      )
+                    : Padding(
+                        padding: const EdgeInsets.only(top: 30),
+                        child: AllArticles()))
           ]));
   }
 }
@@ -112,8 +112,10 @@ class AllArticlesState extends State<AllArticles> {
   @override
   Widget build(BuildContext context) {
     return Obx(() => articleController.isLoadingArticleList()
-        ? CircularProgressIndicator(
-            valueColor: AlwaysStoppedAnimation<Color>(CustomColors.primary),
+        ? Center(
+            child: CircularProgressIndicator(
+              valueColor: AlwaysStoppedAnimation<Color>(CustomColors.primary),
+            ),
           )
         : articleController.articles.isEmpty
             ? EmptyDataViewer(
@@ -148,20 +150,32 @@ class AllArticlesState extends State<AllArticles> {
                           crossAxisAlignment: CrossAxisAlignment.start,
                           mainAxisAlignment: MainAxisAlignment.start,
                           children: [
-                            Text(articleController.articles[index].title,
-                                style: TextStyle(
-                                    fontSize: 16,
-                                    fontFamily: pretendard,
-                                    fontWeight: FontWeight.bold,
-                                    color: CustomColors.black)),
-                            Text(articleController.articles[index].snippet,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: pretendard,
-                                    fontWeight: FontWeight.w400,
-                                    color: CustomColors.lightGrey)),
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              spacing: 4,
+                              children: [
+                                Text(articleController.articles[index].date,
+                                    style: TextStyle(
+                                        fontSize: 12,
+                                        fontFamily: pretendard,
+                                        fontWeight: FontWeight.w400,
+                                        color: CustomColors.grey)),
+                                Text(articleController.articles[index].title,
+                                    style: TextStyle(
+                                        fontSize: 16,
+                                        fontFamily: pretendard,
+                                        fontWeight: FontWeight.w600,
+                                        color: CustomColors.black)),
+                                Text(articleController.articles[index].snippet,
+                                    maxLines: 2,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: pretendard,
+                                        fontWeight: FontWeight.w400,
+                                        color: CustomColors.grey)),
+                              ],
+                            ),
                             const SizedBox(
                               height: 16,
                             ),

@@ -14,6 +14,8 @@ class ArticleController extends GetxController {
   final RxList<Article> articles = RxList<Article>();
   final Rxn<ArticleDetail> selectedArticle = Rxn<ArticleDetail>();
 
+  ArticleDetail? get articleDetail => selectedArticle.value;
+
   // method
   Future<void> getCategoryArticles(
       {required int? userId, required int categoryId}) async {
@@ -45,12 +47,15 @@ class ArticleController extends GetxController {
           userId: userId, categoryId: categoryId, messageId: messageId);
       selectedArticle.value = result;
 
-      print(result);
     } catch (e) {
       throw Exception(e);
     } finally {
       isLoadArticleDetail.value = false;
     }
+  }
+
+   bool isLoadingArticleDetail() {
+    return isLoadArticleDetail.value;
   }
 
   bool isLoadingArticleList() {
