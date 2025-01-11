@@ -1,10 +1,10 @@
 import 'package:get/get_connect/http/src/response/response.dart';
 import 'package:post_it/models/article.model.dart';
 import 'package:post_it/models/article_detail.model.dart';
-import 'package:post_it/services/auth.service.dart';
+import 'package:post_it/services/base.service.dart';
 import 'package:post_it/utils/token_storage.dart';
 
-class ArticleService extends AuthService {
+class ArticleService extends BaseService {
   final TokenStorage _storage = TokenStorage();
 
   Future<List<Article>> getArticlesAPI(
@@ -28,7 +28,6 @@ class ArticleService extends AuthService {
     final Response response = await get(
         headers: {"Authorization": 'Bearer $token'},
         '/article/$messageId?userId=$userId&categoryId=$categoryId');
-    print(response);
 
     return ArticleDetail.fromJson(response.body);
   }

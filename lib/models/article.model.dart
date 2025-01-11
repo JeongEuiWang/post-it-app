@@ -4,6 +4,7 @@ class Article {
   final String date;
   final String messageId;
 
+
   Article({
     required this.title,
     required this.snippet,

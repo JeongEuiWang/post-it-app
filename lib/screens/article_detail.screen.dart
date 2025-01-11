@@ -1,17 +1,16 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:post_it/constants/color.dart';
 import 'package:post_it/constants/font.dart';
 import 'package:post_it/controller/articles.controller.dart';
+import 'package:post_it/controller/favorite.controller.dart';
 import 'package:post_it/controller/user.controller.dart';
 import 'package:post_it/models/article_detail.model.dart';
 import 'package:html/parser.dart' as html_parser;
-
-import 'package:intl/intl.dart';
+import 'package:post_it/widgets/appBars/center_text_pop_app_bar.dart';
 
 class ArticleDetailScreen extends StatefulWidget {
   final int categoryId;
@@ -29,6 +28,7 @@ class ArticleDetailScreen extends StatefulWidget {
 
 class ArticleDetailScreenState extends State<ArticleDetailScreen> {
   final ArticleController articleController = Get.find<ArticleController>();
+  final FavoriteController favoriteController = Get.find<FavoriteController>();
 
   final ArticleDetail? selectedArticle =
       Get.find<ArticleController>().articleDetail;
@@ -38,6 +38,7 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
   void initState() {
     if (userId != null) {
       getArticleDetail();
+      checkIsFavorite();
     }
     super.initState();
   }
@@ -51,6 +52,10 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
     }
   }
 
+  Future<void> checkIsFavorite() async {
+    await favoriteController.checkIsFavorite(messageId: widget.messageId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,13 +64,17 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
           centerText: widget.categoryName,
         ),
         body: Obx(() => (!articleController.isLoadingArticleDetail() &&
-                articleController.articleDetail != null)
+                articleController.articleDetail != null &&
+                !favoriteController.isLoadingCheckFavorite())
             ? Container(
-                margin: EdgeInsets.only(top: 20.0),
+                margin: EdgeInsets.only(top: 16.0),
                 padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 0),
                 child: Column(
                   children: [
-                    ArticleDetailHeader(),
+                    ArticleDetailHeader(
+                      messageId: widget.messageId,
+                      categoryId: widget.categoryId,
+                    ),
                     ArticleDetailContent()
                     // Expanded(child: Text(articleController.selectedArticle.date)),
                   ],
@@ -85,30 +94,155 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
 }
 
 class ArticleDetailHeader extends StatelessWidget {
-  ArticleDetailHeader({super.key});
+  final int categoryId;
+  final String messageId;
+  ArticleDetailHeader(
+      {super.key, required this.categoryId, required this.messageId});
 
   final ArticleDetail? selectedArticle =
       Get.find<ArticleController>().articleDetail;
+  final FavoriteController favoriteController = Get.find<FavoriteController>();
+  final RxBool isFavorite = Get.find<FavoriteController>().isFavorite;
+  final int? userId = Get.find<UserController>().userId;
+
+  Future<void> registerFavorite() async {
+    if (userId != null) {
+      await favoriteController.registerFavorite(
+          userId: userId, categoryId: categoryId, messageId: messageId);
+    }
+  }
+
+  Future<void> deleteFavorite() async {
+    if (userId != null) {
+      await favoriteController.deleteFavorite(
+          userId: userId, messageId: messageId);
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
     return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(selectedArticle?.date ?? '-',
-            style: TextStyle(
-                fontSize: 14,
-                fontFamily: pretendard,
-                color: CustomColors.lightGrey)),
-        const SizedBox(height: 10),
-        Text(selectedArticle?.title ?? '-',
-            style: TextStyle(
-                fontSize: 18,
-                fontFamily: pretendard,
-                fontWeight: FontWeight.w500,
-                color: CustomColors.black)),
-        const SizedBox(height: 20),
-        Divider(height: 1, thickness: 1, color: CustomColors.border)
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          spacing: 10,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(selectedArticle?.date ?? '-',
+                      style: TextStyle(
+                          fontSize: 14,
+                          fontFamily: pretendard,
+                          color: CustomColors.lightGrey)),
+                  const SizedBox(height: 4),
+                  Text(selectedArticle?.title ?? '-',
+                      overflow: TextOverflow.visible,
+                      style: TextStyle(
+                          fontSize: 18,
+                          fontFamily: pretendard,
+                          fontWeight: FontWeight.w500,
+                          color: CustomColors.black)),
+                  const SizedBox(height: 16),
+                ],
+              ),
+            ),
+            Obx(() => isFavorite.value
+                ? GestureDetector(
+                    onTap: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                        content: const Text('즐겨찾기를 해제하시겠어요?'),
+                        contentTextStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: pretendard,
+                            color: CustomColors.black),
+                        actions: <Widget>[
+                          SizedBox(
+                            height: 24,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('취소'),
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero),
+                                  onPressed: () {
+                                    deleteFavorite();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('해제'),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/images/icon_favorite.svg',
+                      width: 20,
+                      height: 20,
+                    ),
+                  )
+                : GestureDetector(
+                    onTap: () => showDialog<String>(
+                      context: context,
+                      builder: (BuildContext context) => AlertDialog(
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(8))),
+                        content: const Text('즐겨찾기에 등록하시겠어요?'),
+                        contentTextStyle: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            fontFamily: pretendard,
+                            color: CustomColors.black),
+                        actions: <Widget>[
+                          SizedBox(
+                            height: 24,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero),
+                                  onPressed: () => Navigator.pop(context),
+                                  child: const Text('취소'),
+                                ),
+                                TextButton(
+                                  style: TextButton.styleFrom(
+                                      padding: EdgeInsets.zero),
+                                  onPressed: () {
+                                    registerFavorite();
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('등록'),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
+                      ),
+                    ),
+                    child: SvgPicture.asset(
+                      'assets/images/icon_not_favorite.svg',
+                      width: 20,
+                      height: 20,
+                    ),
+                  ))
+          ],
+        ),
+        Divider(height: 1, thickness: 0.5, color: CustomColors.border)
       ],
     );
   }
@@ -153,30 +287,5 @@ class ArticleDetailContent extends StatelessWidget {
                 ['head', 'title'])), // non-nullable value
           )
         : Text("ERror");
-  }
-}
-
-class CenterTextPopAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  final String centerText;
-  const CenterTextPopAppBar({super.key, required this.centerText});
-
-  @override
-  Size get preferredSize => Size.fromHeight(48.0);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      systemOverlayStyle: SystemUiOverlayStyle.dark,
-      title: Text(centerText,
-          style: TextStyle(
-              fontSize: 24,
-              fontWeight: FontWeight.w600,
-              color: Color(0xFF222222),
-              fontFamily: 'Pretendard')),
-      centerTitle: true,
-    );
   }
 }

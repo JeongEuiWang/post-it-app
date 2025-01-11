@@ -73,6 +73,8 @@ flutter:
       - assets/images/icon_x.svg
       - assets/images/icon_caution.svg
       - assets/images/image_empty_article.svg
+      - assets/images/icon_favorite.svg
+      - assets/images/icon_not_favorite.svg
   fonts:
       - family: Pretendard
         fonts:

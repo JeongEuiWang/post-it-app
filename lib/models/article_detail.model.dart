@@ -4,13 +4,15 @@ class ArticleDetail {
   final String snippet;
   final String date;
   final String content;
+  final String messageId;
 
   ArticleDetail(
       {required this.categoryName,
       required this.title,
       required this.snippet,
       required this.date,
-      required this.content});
+      required this.content,
+      required this.messageId});
 
   // JSON 데이터를 Filter 객체로 변환하는 팩토리 생성자
   factory ArticleDetail.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,7 @@ class ArticleDetail {
         title: json['title'],
         snippet: json['snippet'],
         date: json['date'],
-        content: json['content']);
+        content: json['content'],
+        messageId: json['message_id']);
   }
 }

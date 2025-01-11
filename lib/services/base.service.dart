@@ -1,7 +1,12 @@
 import 'package:get/get.dart';
-import 'package:post_it/utils/token_manager.dart';
 
-class BaseService extends GetConnect with TokenManager {
+class BaseService extends GetConnect {
+  @override
+  void onInit() {
+    httpClient.baseUrl = 'http://localhost:8000';
+    super.onInit();
+  }
+
   BaseService() {
     onInit();
   }
