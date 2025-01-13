@@ -46,7 +46,6 @@ class ArticleController extends GetxController {
     try {
       ArticleDetail result = await articleService.getArticleDetailAPI(
           userId: userId, categoryId: categoryId, messageId: messageId);
-      print(result);
       selectedArticle.value = result;
     } catch (e) {
       throw Exception(e);

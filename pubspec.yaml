@@ -77,7 +77,9 @@ flutter:
       - assets/images/icon_favorite.svg
       - assets/images/icon_not_favorite.svg
       - assets/images/icon_arrow.svg
-
+      - assets/images/icon_logo_white.svg
+      - assets/images/icon_logo_primary.svg
+      - assets/images/icon_google.svg
   fonts:
       - family: Pretendard
         fonts:
@@ -90,6 +92,10 @@ flutter:
           - asset: assets/fonts/Pretendard-Light.otf
           - asset: assets/fonts/Pretendard-ExtraLight.otf
           - asset: assets/fonts/Pretendard-Thin.otf
+      - family: Poppins
+        fonts:
+          - asset: assets/fonts/Poppins-SemiBold.otf
+
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

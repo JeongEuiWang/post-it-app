@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:post_it/constants/color.dart';
 import 'package:post_it/controller/user.controller.dart';
@@ -22,7 +23,6 @@ class SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkLoginStatus() async {
     bool isSignedIn = await _userControler.isSignedIn();
-    print(isSignedIn);
     if (isSignedIn) {
       Navigator.pushReplacement(
         context,
@@ -44,14 +44,17 @@ class SplashScreenState extends State<SplashScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            SvgPicture.asset("assets/images/icon_logo_white.svg"),
+            SizedBox(height: 10),
             Text(
               'Post IT',
-              style: TextStyle(fontSize: 32, color: Colors.white),
+              style: TextStyle(
+                  fontSize: 38,
+                  color: Colors.white,
+                  fontFamily: "Poppins",
+                  fontWeight: FontWeight.w600),
             ),
             SizedBox(height: 20),
-            CircularProgressIndicator(
-              valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-            ),
           ],
         ),
       ),

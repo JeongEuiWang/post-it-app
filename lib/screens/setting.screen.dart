@@ -75,6 +75,24 @@ class SettingScreenState extends State<SettingScreen>
                         )
                       ],
                     ),
+                    OutlinedButton(
+                        style: OutlinedButton.styleFrom(
+                            side: BorderSide(
+                                color: CustomColors.lightGrey, width: 1),
+                            minimumSize: Size(double.infinity, 30),
+                            padding: const EdgeInsets.symmetric(vertical: 16),
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(8))),
+                        onPressed: () {
+                          userController.signOutUser();
+                          Get.offAll(() => SplashScreen());
+                        },
+                        child: Text("로그아웃",
+                            style: TextStyle(
+                                color: CustomColors.grey,
+                                fontFamily: pretendard,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500)))
                   ],
                 ))));
   }

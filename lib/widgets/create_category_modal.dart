@@ -63,7 +63,6 @@ class CreateCategoryModal {
             emailController: emailController,
             onCreate: onCreate)).then((value) {
       _categoryController.getCategories(userId: userId);
-      print(value);
     });
   }
 }
