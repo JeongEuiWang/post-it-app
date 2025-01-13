@@ -44,7 +44,6 @@ class CategoryController extends GetxController {
     return isLoading.value;
   }
 
-  // 필터 선택 변경
   void onSelectCategory(int index) {
     selectedCategoryIndex.value = index;
   }

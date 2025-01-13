@@ -82,4 +82,21 @@ class UserController extends GetxController {
     }
     // await Future.delayed(Duration(seconds: 2)); // 스플래시 화면 대기 시간
   }
+
+  Future<void> signOutUser() async {
+    try {
+      // Firebase 로그아웃
+      await FirebaseAuth.instance.signOut();
+
+      // Google 로그아웃
+      final GoogleSignIn googleSignIn = GoogleSignIn();
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
+      
+      print("User successfully signed out.");
+    } catch (e) {
+      print("Error signing out: $e");
+    }
+  }
 }

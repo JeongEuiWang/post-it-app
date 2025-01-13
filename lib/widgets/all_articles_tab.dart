@@ -31,6 +31,7 @@ class AllArticlesTabState extends State<AllArticlesTab>
     }
     _animationController = BottomSheet.createAnimationController(this);
     _animationController.duration = Duration(milliseconds: 300);
+
     super.initState();
   }
 
@@ -97,6 +98,9 @@ class AllArticlesState extends State<AllArticles> {
   @override
   void initState() {
     _getCategoryArticles(userId, categories[selectedCategoryIndex.value].id);
+    ever<int>(selectedCategoryIndex, (index) {
+      _getCategoryArticles(userId, categories[index].id);
+    });
     super.initState();
   }
 

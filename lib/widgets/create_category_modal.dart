@@ -84,7 +84,7 @@ Widget _createCategoryWidget({
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
       child: Column(
         children: [
-          _createCategoryHeader(),
+          _createCategoryHeader(context),
           Expanded(
             child: Padding(
                 padding: const EdgeInsets.only(top: 32),
@@ -105,7 +105,7 @@ Widget _createCategoryWidget({
   );
 }
 
-Widget _createCategoryHeader() {
+Widget _createCategoryHeader(BuildContext context) {
   return Row(
     mainAxisAlignment: MainAxisAlignment.spaceBetween,
     children: [
@@ -117,12 +117,17 @@ Widget _createCategoryHeader() {
             color: CustomColors.black,
             fontFamily: pretendard),
       ),
-      SvgPicture.asset(
-        'assets/images/icon_x.svg',
-        width: 24,
-        height: 24,
-        colorFilter: ColorFilter.mode(CustomColors.grey, BlendMode.srcIn),
-      ),
+      GestureDetector(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: SvgPicture.asset(
+          'assets/images/icon_x.svg',
+          width: 24,
+          height: 24,
+          colorFilter: ColorFilter.mode(CustomColors.grey, BlendMode.srcIn),
+        ),
+      )
     ],
   );
 }
