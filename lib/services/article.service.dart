@@ -14,8 +14,11 @@ class ArticleService extends BaseService {
     final Response response = await get(
         headers: {"Authorization": 'Bearer $token'},
         '/article?userId=$userId&categoryId=$categoryId');
-    List<dynamic> body = response.body;
 
+    List<dynamic> body = response.body;
+    if (body.isEmpty) {
+      return [];
+    }
     return body.map((json) => Article.fromJson(json)).toList();
   }
 

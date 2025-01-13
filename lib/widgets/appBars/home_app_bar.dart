@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:post_it/constants/color.dart';
+import 'package:post_it/screens/setting.screen.dart';
 
 class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
   const HomeAppBar({super.key});
@@ -41,15 +42,21 @@ class HomeAppBar extends StatelessWidget implements PreferredSizeWidget {
                     fontWeight: FontWeight.bold,
                     color: Color(0xFF222222),
                     fontFamily: 'Pretendard')),
-            TextButton(
-                onPressed: signOutUser,
+            GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => SettingScreen(),
+                      ));
+                },
                 child: SvgPicture.asset(
                   'assets/images/icon_setting.svg',
                   height: 24.0,
                   width: 24.0,
                   colorFilter:
                       ColorFilter.mode(CustomColors.grey, BlendMode.srcIn),
-                )),
+                ))
           ],
         ));
   }

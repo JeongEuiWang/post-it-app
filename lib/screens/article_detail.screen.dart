@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:flutter_widget_from_html/flutter_widget_from_html.dart';
 import 'package:get/get.dart';
 import 'package:post_it/constants/color.dart';
@@ -9,8 +9,8 @@ import 'package:post_it/controller/articles.controller.dart';
 import 'package:post_it/controller/favorite.controller.dart';
 import 'package:post_it/controller/user.controller.dart';
 import 'package:post_it/models/article_detail.model.dart';
-import 'package:html/parser.dart' as html_parser;
 import 'package:post_it/widgets/appBars/center_text_pop_app_bar.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 class ArticleDetailScreen extends StatefulWidget {
   final int categoryId;
@@ -29,6 +29,7 @@ class ArticleDetailScreen extends StatefulWidget {
 class ArticleDetailScreenState extends State<ArticleDetailScreen> {
   final ArticleController articleController = Get.find<ArticleController>();
   final FavoriteController favoriteController = Get.find<FavoriteController>();
+  late final WebViewController _controller;
 
   final ArticleDetail? selectedArticle =
       Get.find<ArticleController>().articleDetail;
@@ -40,6 +41,8 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
       getArticleDetail();
       checkIsFavorite();
     }
+    _controller = WebViewController();
+    // ..setJavaScriptMode(JavaScriptMode.unrestricted) // JavaScript 활성화
     super.initState();
   }
 
@@ -75,7 +78,9 @@ class ArticleDetailScreenState extends State<ArticleDetailScreen> {
                       messageId: widget.messageId,
                       categoryId: widget.categoryId,
                     ),
-                    ArticleDetailContent()
+                    Expanded(
+                        child: ArticleDetailContent(
+                            webviewController: _controller))
                     // Expanded(child: Text(articleController.selectedArticle.date)),
                   ],
                 ))
@@ -249,7 +254,8 @@ class ArticleDetailHeader extends StatelessWidget {
 }
 
 class ArticleDetailContent extends StatelessWidget {
-  ArticleDetailContent({super.key});
+  ArticleDetailContent({super.key, required this.webviewController});
+  final WebViewController webviewController;
 
   final ArticleDetail? selectedArticle =
       Get.find<ArticleController>().articleDetail;
@@ -264,28 +270,21 @@ class ArticleDetailContent extends StatelessWidget {
     }
   }
 
-  String removeSpecificTagsUsingHtmlParser(
-      String? html, List<String> tagsToRemove) {
-    var document = html_parser.parse(html);
-
-    for (var tag in tagsToRemove) {
-      document.getElementsByTagName(tag).forEach((element) {
-        element.remove();
-      });
-    }
-
-    return document.outerHtml;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return selectedArticle != null
-        ? SingleChildScrollView(
-            scrollDirection: Axis.vertical,
-            child: HtmlWidget(removeSpecificTagsUsingHtmlParser(
-                decodeContentToUTF(selectedArticle?.content),
-                ['head', 'title'])), // non-nullable value
-          )
-        : Text("ERror");
+    final decodedContent = decodeContentToUTF(selectedArticle?.content) ?? "";
+
+    if (decodedContent.isEmpty) {
+      return Text("Error: No content to display");
+    }
+    return WebViewWidget(
+      controller: webviewController
+        ..setJavaScriptMode(JavaScriptMode.unrestricted)
+        ..loadRequest(Uri.dataFromString(
+          decodedContent,
+          mimeType: 'text/html',
+          encoding: Encoding.getByName('utf-8'),
+        )),
+    );
   }
 }

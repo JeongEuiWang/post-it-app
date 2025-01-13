@@ -1,5 +1,4 @@
 import 'package:get/get.dart';
-import 'package:post_it/models/favorite.model.dart';
 import 'package:post_it/services/favorite.service.dart';
 
 class FavoriteController extends GetxController {

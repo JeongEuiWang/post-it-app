@@ -28,6 +28,7 @@ class ArticleController extends GetxController {
           userId: userId, categoryId: categoryId);
       articles.value = result;
     } catch (e) {
+      print(e);
       throw Exception(e);
     } finally {
       isLoadArticleList.value = false;
@@ -45,8 +46,8 @@ class ArticleController extends GetxController {
     try {
       ArticleDetail result = await articleService.getArticleDetailAPI(
           userId: userId, categoryId: categoryId, messageId: messageId);
+      print(result);
       selectedArticle.value = result;
-
     } catch (e) {
       throw Exception(e);
     } finally {
@@ -54,7 +55,7 @@ class ArticleController extends GetxController {
     }
   }
 
-   bool isLoadingArticleDetail() {
+  bool isLoadingArticleDetail() {
     return isLoadArticleDetail.value;
   }
 

@@ -3,7 +3,7 @@ class ArticleDetail {
   final String title;
   final String snippet;
   final String date;
-  final String content;
+  final String? content;
   final String messageId;
 
   ArticleDetail(

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:post_it/constants/color.dart';
 import 'package:post_it/controller/user.controller.dart';
 import 'home.screen.dart';
 import 'login.screen.dart';
@@ -21,6 +22,7 @@ class SplashScreenState extends State<SplashScreen> {
 
   Future<void> _checkLoginStatus() async {
     bool isSignedIn = await _userControler.isSignedIn();
+    print(isSignedIn);
     if (isSignedIn) {
       Navigator.pushReplacement(
         context,
@@ -37,13 +39,13 @@ class SplashScreenState extends State<SplashScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.blue,
+      backgroundColor: CustomColors.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              'My App',
+              'Post IT',
               style: TextStyle(fontSize: 32, color: Colors.white),
             ),
             SizedBox(height: 20),

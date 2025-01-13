@@ -28,6 +28,7 @@ class UserController extends GetxController {
   Future<void> handleLogin() async {
     try {
       final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+      print(googleUser);
       if (googleUser == null) throw Exception("Invalid Google User");
 
       final GoogleSignInAuthentication googleAuth =
@@ -37,16 +38,19 @@ class UserController extends GetxController {
         accessToken: googleAuth.accessToken,
         idToken: googleAuth.idToken,
       );
+      print(googleAuth);
+      print(credential);
 
       await _auth.signInWithCredential(credential);
       if (googleAuth.idToken == null) throw Exception("Invalid Id Token");
 
-      final userResponse = await _userService.loginAPI(googleAuth.idToken!);
-
+      final userResponse = await _userService.loginAPI(idToken: googleAuth.idToken!);
+      print(userResponse);
       setUser(userResponse);
 
       await _storage.saveAccessToken(googleAuth.accessToken!);
     } catch (e) {
+      print(e);
       throw Exception(e);
     }
   }
@@ -62,8 +66,11 @@ class UserController extends GetxController {
 
       final GoogleSignInAuthentication googleAuth =
           await googleUser.authentication;
+      print(googleAuth);
+      print(googleAuth.idToken);
+      print(googleAuth.accessToken);
 
-      final userResponse = await _userService.loginAPI(googleAuth.idToken!);
+      final userResponse = await _userService.loginAPI(idToken: googleAuth.idToken!);
       setUser(userResponse);
       final accessToken = googleAuth.accessToken;
       await _storage.clearTokens();

@@ -38,7 +38,6 @@ class AllArticlesTabState extends State<AllArticlesTab>
     if (_userId != null) {
       await categoryController.getCategories(userId: _userId);
     }
-    print(categoryController.categories);
   }
 
   @override
@@ -105,7 +104,6 @@ class AllArticlesState extends State<AllArticles> {
     if (userId != null && categories.isNotEmpty) {
       await articleController.getCategoryArticles(
           userId: userId, categoryId: categoryId);
-      print(articleController.articles);
     }
   }
 
@@ -167,7 +165,7 @@ class AllArticlesState extends State<AllArticles> {
                                         fontWeight: FontWeight.w600,
                                         color: CustomColors.black)),
                                 Text(articleController.articles[index].snippet,
-                                    maxLines: 2,
+                                    maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     style: TextStyle(
                                         fontSize: 14,

@@ -46,6 +46,7 @@ dependencies:
   fluttertoast: ^8.2.10
   html: ^0.15.5
   intl: ^0.20.1
+  webview_flutter: ^4.2.2
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -75,6 +76,7 @@ flutter:
       - assets/images/image_empty_article.svg
       - assets/images/icon_favorite.svg
       - assets/images/icon_not_favorite.svg
+
   fonts:
       - family: Pretendard
         fonts:
